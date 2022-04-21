@@ -1,0 +1,453 @@
+<html style="overflow-x:hidden ;">
+
+<head>
+  <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+</head>
+
+<body>
+  <xyz class="visually-hidden"> <%=owner_id%></xyz>
+  <abc class="visually-hidden"> <%=currentUserId%></abc>
+  <ent class="visually-hidden"> <%=data[0].entryTime%></ent>
+  <nm class="visually-hidden"> <%=name%></nm>
+
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap" rel="stylesheet">
+
+    <style>
+      *{
+          font-family: 'Exo', sans-serif;
+        }
+        
+
+      .grid-item3 {
+       grid-column-start: 1;
+       grid-column-end: 4;
+      }
+
+      .abc {
+       grid-column-start: 4;
+       grid-column-end: 5;
+      }
+
+        .main-container {
+          display:grid;
+          grid-gap: 20px;
+          grid-template-columns: auto auto auto auto;  
+          justify-content: center;
+          align-items: center;
+          
+          }
+
+         
+          @media (max-width: 800px) {
+            
+          }
+          
+          table {
+            width: 90%;
+            border-collapse: collapse;
+            border-spacing: 50px 0;
+            position: relative;
+          }
+          tr {
+              border-bottom: 1px solid grey;
+              border-bottom-width:0.3px ;
+            }
+
+          td {
+            width: 50%;
+            font-size: 24px;
+            padding-top : 27px;
+            padding-right: 15px;
+            padding-left: 14px;
+            padding-bottom: 27px;
+          }
+          td:last-child{
+            text-align: end;
+          }
+         
+    </style>
+
+
+<div class="container">
+  <!-- Stack the columns on mobile by making one full-width and the other half-width -->
+  <div class="row">
+    <div class="col-md-8" style="height: 80vh;">
+
+      <figure>
+        <img src="/images/<%=data[0].image%>" alt=""style="width: 100%;height: 100%;object-fit: contain;"> 
+      </figure>
+
+    </div>
+    <div class="col-6 col-md-4 align-self-center">
+      <div class="d-flex flex-column bd-highlight mb-3">
+        <div class="p-2 bd-highlight">
+          <div class="card">
+            
+              <div class="card-body">
+                <% if(data[0].adTitle != null){%> 
+                  <h2><%= data[0].adTitle%></h2>
+                <% } %>
+    
+                <% if(data[0].name != null){%> 
+                  <h2><%= data[0].name%></h2>
+                <% } %>
+
+                <h3 style="margin-top: 1.4rem;margin-bottom: 1.4rem;">₹<%= data[0].price%></h3> 
+                <h4><%= data[0].location%></h4>
+              </div>
+          
+          </div>
+        </div>
+        <div class="p-2 bd-highlight">
+
+          <% if (deleteBtn == 0) { %>
+            <div class="vstack gap-2 mx-auto">
+              <button type="button" class="btn btn-secondary" onclick="window.location.href='/delete-pdt/?name=<%=name%>&owner_id=<%=data[0].owner_id%>&entryTime=<%=data[0].entryTime%>';">
+                Delete This Product
+              </button>
+            
+              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#infoModal">
+                Update Info.
+              </button>
+              
+                
+
+            </div>
+  
+              <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="infoModalLabel" style="font-weight: bolder;" >Fill details which you would like to update</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+  
+                      <form action = "/update-pdt/?name=<%=name%>&owner_id=<%=data[0].owner_id%>&entryTime=<%=data[0].entryTime%>" method="post" enctype="multipart/form-data">
+                        <% if(name == "car"){%>
+                          
+                              <input type="text" name = "name" placeholder="Enter Car name"   >
+                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"min="1901" max="2155" >
+                              
+                              <input type="radio" name="fuel"id = "petrol"   value="petrol" >
+                              <label for="petrol">Petrol</label><br>
+                              <input type="radio" name="fuel"id = "diesel"  value="diesel" >
+                              <label for="diesel">Diesel</label><br>
+                              <input type="radio" name="fuel"id = "gasoline"  value="gasoline" >
+                              <label for="gasoline">Gasoline</label><br>
+                              <input type="radio" name="fuel"id = "ethanol"  value="ethanol" >
+                              <label for="ethanol">Ethanol</label><br>
+                              <input type="radio" name="fuel" id = "cng" value ="cng" >
+                              <label for="cng"> CNG </label><br>
+                              <input type="radio" name="fuel"id ="lpg" value="lpg" >
+                              <label for="lpg"> LPG </label><br>
+                              <input type="radio" name="fuel"id = "bio-diesel"  value="bio-diesel" >
+                              <label for="bio-diesel"> Bio-Diesel </label><br>
+                              <input type="radio" name="fuel" id = "electricity" value="electricity" >
+                              <label for="electricity"> Electricity </label><br>
+                              
+                              <input type="text" name = "transmission" placeholder="Enter transmission(text)">
+                              <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
+                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %>
+                      
+                        <% if(name == "phone"){%>
+                          
+                              <input type="text" name = "name" placeholder="Enter name" >
+                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
+                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %>
+              
+                        <% if(name == "pet"){%>
+                          
+                              <input type="text" name = "name" placeholder="Enter name" >
+                              <input type="number" step="0.01" name = "age" placeholder="Enter age"  min="0.1">
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %>
+              
+                        <% if(name == "furniture"){%>
+                          
+                              <input type="text" name = "name" placeholder="Enter name" >
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %>
+              
+                        <% if(name == "electronicapp"){%>
+                          
+                            <input type="text" name = "name" placeholder="Enter name" >
+                            <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
+                            <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                            <input type="text" name = "description" placeholder="description" >
+                            <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                            <input type="file" name = "image" accept="" >
+                            <input type="text" name = "location" placeholder="location" >
+                            
+                             
+                        <% } %>
+              
+              
+                        <% if(name == "home"){%>
+                          
+                              <input type="text" name = "adTitle" placeholder="Enter adTitle" >
+                              <input type="text" name = "furnishing" placeholder="Enter furnishing">
+                              <input type="number" name = "bedRooms" placeholder="no of bedrooms" >
+                              <input type="number" step="0.0001" name = "superBuidupArea" placeholder="Enter superBuidupArea" >
+                              <input type="number" step="0.0001" name = "carpetArea" placeholder="Enter carpetArea" >
+              
+                              <input type="number" name = "floors" placeholder="no of floors">
+                              <input type="number" name = "carParking" placeholder="carParking">
+                              <input type="text" name = "facing" placeholder="Enter facing">
+              
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %>
+              
+              
+                        <% if(name == "bike"){%>
+                          
+                              <input type="text" name = "name" placeholder="Enter name" >
+                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
+                              <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
+                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                              <input type="text" name = "description" placeholder="description" >
+                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                              <input type="file" name = "image" accept="" >
+                              <input type="text" name = "location" placeholder="location" >
+                              
+                             
+                        <% } %> 
+              
+                        <% if(name == "other"){%>
+                          
+                            <input type="text" name = "name" placeholder="Enter name" >
+                            <input type="text" name = "description" placeholder="description" >
+                            <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
+                            <input type="file" name = "image" accept="" >
+                            <input type="text" name = "location" placeholder="location" >
+                            
+                             
+                        <% } %>
+
+                    </div>
+                    <div class="modal-footer">
+                      <input type="submit" class="btn btn-secondary" placeholder="submit">
+                    </form>   
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+  
+              <%} else { %>
+                      <!-- Button trigger modal -->
+            <div class="vstack gap-2 mx-auto">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#infoModal">
+                Get Seller's Contact Info.
+              </button>
+            
+            <input onclick="return sendEvent(this);" type="button" value="Claim this product" class="btn btn-outline-secondary"/>
+            </div> 
+    
+    <!-- Modal -->
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="infoModalLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-person-fill"></i> Name: <%=userInfo[0].name%></span>
+              <br>
+              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-envelope-open-fill"></i> Email: <%=userInfo[0].email%></span>
+              <br>
+              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-telephone-fill"></i> Phone: <%=userInfo[0].phone%></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>   
+          </div>
+        </div>
+      </div>
+    </div>
+        <% } %>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+        <% if(name != "other" && name != "furniture"){%> 
+
+          <h2 style="margin-top: 2rem; margin-bottom: 2rem;margin-left: 4rem;">Details</h2>
+          <table bgcolor="white" align="center">  
+            
+          <tbody> 
+
+            <% if(data[0].bedRooms != null){%> 
+              <tr>  
+                <td>Bedrooms:</td>  
+                <td><%= data[0].bedRooms%></td>  
+              </tr>  
+            <% } %>
+            <% if(data[0].furnishing != null){%> 
+              <tr>  
+                <td>Furnishing :</td>  
+                <td><%= data[0].furnishing%></td>  
+              </tr>  
+            <% } %>
+            <% if(data[0].superBuidupArea != null){%> 
+              <tr>  
+                <td>SuperBuidupArea :</td>  
+                <td><%= data[0].superBuidupArea%></td>  
+              </tr>  
+            <% } %>
+            <% if(data[0].carpetArea != null){%> 
+              <tr>  
+                <td>CarpetArea :</td>  
+                <td><%= data[0].carpetArea%></td>  
+              </tr>  
+            <% } %> 
+
+            <% if(data[0].floors != null){%> 
+              <tr>  
+                <td>Floors :</td>  
+                <td><%= data[0].floors%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].carParking != null){%> 
+              <tr>  
+                <td>CarParking :</td>  
+                <td><%= data[0].carParking%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].facing != null){%> 
+              <tr>  
+                <td>facing :</td>  
+                <td><%= data[0].facing%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].purchaseYear != null){%> 
+              <tr>  
+                <td>Year of purchase :</td>  
+                <td><%= data[0].purchaseYear%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].age != null){%> 
+              <tr>  
+                <td>Age :</td>  
+                <td><%= data[0].age%></td>  
+              </tr>  
+            <% } %>
+            
+            <% if(data[0].fuel != null){%> 
+              <tr>  
+                <td>Fuel :</td>  
+                <td><%= data[0].fuel%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].transmission != null){%> 
+              <tr>  
+                <td>Transmission :</td>  
+                <td><%= data[0].transmission%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].kmDriven != null){%> 
+              <tr>  
+                <td>KmDriven :</td>  
+                <td><%= data[0].kmDriven%></td>  
+              </tr>  
+            <% } %>
+
+            <% if(data[0].noOfOwners != null){%> 
+              <tr>  
+                <td>noOfOwners :</td>  
+                <td><%= data[0].noOfOwners%></td>  
+              </tr>  
+            <% } %>
+
+            </tbody>  
+         </table>      
+          <% } %>
+      
+        
+        <h2 style="margin-top: 2rem;margin-bottom: 2rem;margin-left: 4rem;">Description</h2>
+        <p style="font-size: 24px;margin-left: 4rem;"><%= data[0].description%></p>   
+        
+    <!-- <input type="text" class="message">
+    <button onclick="sendMessage()">Send submit</button> -->
+    
+
+    <script>
+      var currentUserId = parseInt(document.getElementsByTagName("abc")[0].innerHTML);
+      var owner_id = parseInt(document.getElementsByTagName("xyz")[0].innerHTML);
+      var entryTime = document.getElementsByTagName("ent")[0].innerHTML;
+      var table_name = document.getElementsByTagName("nm")[0].innerHTML;
+
+      // var userId = prompt("Enter user ID");
+      // console.log(currentUserId);
+      // console.log(owner_id);
+      var socketIO = io("http://localhost:3000");
+
+    function sendEvent(form) {
+        event.preventDefault();
+        
+      var message = prompt("Add some additional chat message or just click on Ok.(User must be online in order to receive chat message)");
+      socketIO.emit("sendEvent", {
+          "currentUserId": currentUserId,
+          "owner_id": owner_id,
+          "message": message,
+          "entryTime":entryTime,
+          "table_name":table_name
+    });
+}
+  </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+        
+</body>
+
+ 
+</html>

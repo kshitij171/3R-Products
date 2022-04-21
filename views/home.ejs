@@ -1,0 +1,388 @@
+<html>
+    <head>
+      
+        <script>
+          var globalF = 0;
+          function Enabled(box){
+            var from = document.getElementById("from");
+            var to = document.getElementById("to");
+            var remove = document.getElementById("remove");
+            if(box.checked){
+              globalF+= 1;
+              from.disabled = false;
+              to.disabled = false;
+              remove.disabled = true;
+            }else {
+              globalF -= 1;
+              if(globalF == 0){
+                from.disabled = true;
+                to.disabled = true;
+                remove.disabled = false;
+              }
+            }
+          }
+        </script>
+        <link rel="shortcut icon" type="image/x-icon" href="images/icon.png">
+        <title>3R Products</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Exo:wght@300&display=swap" rel="stylesheet">
+
+        <link rel = "stylesheet" href = "/style/styler.css">
+        <nav class="navbar navbar-dark fixed-top bg-dark">
+
+          <!-- <form action="/search" class="search-form">
+            
+            <input type="search" name="term" placeholder="Search for an item">
+            <input type="submit" value="Search">
+          </form> -->
+         
+        
+      
+      <a href="/category-page">
+            <button class="btn btn-outline-warning" style="margin-left:40.5vw;width: 21vw; font-weight: bold;">Sell a Product</button>
+      </a>
+      <div class="hstack gap-4 ms-auto">
+        <a data-bs-toggle="modal" data-bs-target="#wishItemModal" style="cursor: pointer;font-size: xx-large;" >
+          <i class="bi bi-bag-heart" style="color:whitesmoke;"></i>
+        </a>
+        
+        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdrop" style="cursor: pointer;font-size: xx-large;">
+        <div class="position-relative">
+          <i class="bi bi-bell" style="color:whitesmoke;"></i>
+        </a>
+          <% var pen_cnt = 0; %>
+
+          <% for(var k=0; k< request.length; k++) {%>
+            <% if(request[k].status == 'pending' && request[k].owner_id == currentUserId){%>
+                <% pen_cnt +=1 ; %>
+            <% } %>
+          <% } %>
+          <%if(pen_cnt != 0){%>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              <%=pen_cnt%>
+          </span>
+          <% } %>
+        </div>
+       
+        <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBackdropmyOrders" style="cursor: pointer">
+          <img src="images/myOrders.png" alt="" style="height:2.4rem">
+        </a>
+        <% if(user_id != -1){%>
+          <a href="/sign-out" style="margin-right:1.5rem;">
+              <button class="btn btn-outline-warning">Sign-out</button>
+          </a>
+      <% } else { %>
+        <a href="/create" style="margin-right:1.5rem;">
+          <button class="btn btn-outline-warning">Sign-In</button>
+      </a>
+      <% } %>
+      </div>
+      
+    <!-- myOrders offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdropmyOrders" aria-labelledby="offcanvasWithBackdropLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel" style="color: black;font-weight:bolder;">Your Transactions</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul>
+          <% for(var j=0; j< request.length; j++) {%>
+              <li>
+                <% if(request[j].status == 'approved' && request[j].owner_id == currentUserId){%>
+                  <p>Sold <%=request[j].productName%> to <%=request[j].c_name%> on <%=request[j].purchaseTime%> </p>
+                 <%}%>
+
+                 <% if(request[j].status == 'approved' && request[j].customer_id == currentUserId){%>
+                  <p>Bought <%=request[j].productName%> from <%=request[j].o_name%> on <%=request[j].purchaseTime%> </p>
+                  
+                 <%}%>
+              </li>
+          <%}%>
+        </ul>
+      </div>
+    </div>
+
+       
+        </nav>
+
+          <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        
+    </head>
+    <body >
+        <abc class="visually-hidden"> <%=currentUserId%></abc>
+     
+         <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel" style="margin-top: 1rem;">
+            <div class="carousel-inner">
+              <div class="carousel-item active"style="display: block; width:100%;height:70vh;padding-top:1rem">
+                <img src="images/a.jpg" class="d-block w-100" alt="..." style="width:100%;height:100%;object-fit: contain;">
+              </div>
+              <div class="carousel-item"style="display: block; width:100%;height:70vh;padding-top:1rem" >
+                <img src="images/b.jpg" class="d-block w-100" alt="..."style="width:100%;height:100%;object-fit: contain;">
+              </div>
+              <div class="carousel-item"style="display: block; width:100%;height:70vh;padding-top:1rem" >
+                <img src="images/c.jpg" class="d-block w-100" alt="..."style="width:100%;height:100%;object-fit: contain;">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          
+        </div>
+
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="wishItemModal" tabindex="-1" aria-labelledby="wishItemModalLabel" aria-hidden="true" style="top: 5%;">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content" >
+              <div class="modal-header">
+                <h5 class="modal-title" id="wishItemModalLabel" style="color: black;font-weight:bolder;">Your Wishlist items.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body" style="background-color: whitesmoke;">
+
+                <% for(var k=0; k< wishlistItems.length; k++) {%>
+                  <a href="/profile/?owner_id=<%= wishlistItems[k][0].owner_id %>&name=<%=wishlistItems[k][0].table_name%>&entryTime=<%=wishlistItems[k][0].entryTime%>"> 
+                  <div class="card mb-3" style="max-width: 540px;height: 7rem;">
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <figure style="height: 7rem;">
+                        <img src="images/<%=wishlistItems[k][0].image%>" class="img-fluid rounded-start" alt="..." style="width: 100%;height: 100%;object-fit: contain;">
+                        </figure>
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          
+                            <h5 class="card-title" style="color: black;font-weight: bold;"><%=wishlistItems[k][0].name%></h5>
+                           
+                          <p class="card-text" style="color:grey;font-weight: bold;">₹<%=wishlistItems[k][0].price%></p>
+                          <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </a>
+                  <% } %>
+                   
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" style="background-color: rgba(23, 26, 32, 0.8);">Close</button>   
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+<!-- Off canvas -->
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasWithBackdrop" aria-labelledby="offcanvasWithBackdropLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasWithBackdropLabel" style="color: black;font-weight:bolder;">Pending Requests </h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul>
+      <% for(var j=0; j< request.length; j++) {%>
+          <li>
+            <% if(request[j].status == 'pending' && request[j].owner_id == currentUserId){%>
+              <p><%=request[j].c_name%> with Email <%=request[j].c_email%> would like to claim your <%=request[j].productName%> </p>
+              <div class="hstack gap-3">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/approve/?entryTime=<%=request[j].entryTime%>';">Approve</button>
+                <div class="vr"></div>
+                <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/reject/?entryTime=<%=request[j].entryTime%>';">Decline</button>
+              </div>
+             <%}%>
+          </li>
+      <%}%>
+    </ul>
+
+  </div>
+</div>
+
+
+
+        
+        <a data-bs-toggle="modal" data-bs-target="#filterModal" style="position:fixed;right:91.5vw;">
+          <img src="images/filter.png" alt="" style="height: 5.5rem;width: 5rem;cursor: pointer;">
+        </a>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true" style="top: 10%;">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="filterModalLabel" style="font-weight: bolder;">Select the filters you would like to apply.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form action = "/filter" method="post">
+                  
+                  <input type="checkbox" id="remove" name="remove" value="remove">
+                  <label for="remove"> Remove all filters </label><br>
+                  <input type="checkbox"  name="car" value="car" onclick="Enabled(this)">
+                  <label for="car"> Car </label><br>
+                  <input type="checkbox"  name="phone" value="phone" onclick="Enabled(this)">
+                  <label for="phone"> Phone</label><br>
+                  <input type="checkbox"  name="furniture" value="furniture" onclick="Enabled(this)">
+                  <label for="furniture"> Furniture </label><br>
+                  <input type="checkbox"  name="pet" value="pet" onclick="Enabled(this)">
+                  <label for="pet"> Pet </label><br>
+                  <input type="checkbox"  name="bike" value="bike" onclick="Enabled(this)">
+                  <label for="bike"> Bike </label><br>
+                  <input type="checkbox"  name="electronicApp" value="electronicApp" onclick="Enabled(this)">
+                  <label for="electronicApp"> Electronic Appliances </label><br>
+                  <input type="checkbox"  name="home" value="home" onclick="Enabled(this)">
+                  <label for="home"> Home </label><br>
+
+                  <input type="checkbox"  name="other" value="other" onclick="Enabled(this)">
+                  <label for="other" > Other Items </label><br><br>
+                  <label for="from"> From </label>
+                  <input id= "from" name="from" type="number" disabled="disabled" />
+                  <label for="to"> To </label>
+                  <input id= "to" name="to" type="number" disabled="disabled" /><br><br>
+                  <input type="submit" class="btn btn-dark" placeholder="submit" style="background-color: rgba(23, 26, 32, 0.8);">
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" style="background-color: rgba(23, 26, 32, 0.8);">Close</button>   
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="d-flex align-content-start flex-wrap container-fluid" style="place-content: center;display: grid; margin-left:3.5rem" >
+          
+      
+
+          <% for(var i=0; i< finalRes.length; i++) {%>
+            <% if(finalRes[i].length  != 0){%>
+
+            <% for(var j=0; j< finalRes[i].length; j++) {%>
+              <li>
+                <a href="/profile/?owner_id=<%= finalRes[i][j].owner_id %>&name=<%=finalRes[i][j].table_name%>&entryTime=<%=finalRes[i][j].entryTime%>"> 
+                <div class="card "  style="width: 23rem;height: 23rem;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="display: inline-block;color: black;font-weight: bolder;"><%= finalRes[i][j].name %></h5>
+
+                 <% var present = -1; %>
+                 <!-- <h1><%= wishlistItems.length %></h1> -->
+
+                <% for(var k=0; k< wishlistItems.length; k++) {%>
+                  <% if(wishlistItems[k][0].table_name == finalRes[i][j].table_name && wishlistItems[k][0].owner_id == finalRes[i][j].owner_id && wishlistItems[k][0].entryTime == finalRes[i][j].entryTime){%>
+                    <% present = 0; %>
+                  <% } %>
+                  <% } %>
+                <% if(present != 0){%>
+                  <span onclick="location='/wishlistA/?owner_id=<%= finalRes[i][j].owner_id %>&name=<%=finalRes[i][j].table_name%>&entryTime=<%=finalRes[i][j].entryTime%>';return false" style="cursor: pointer;">
+                    <i class="bi bi-heart" style="position: absolute; color: black;font-size: x-large;left: 90%;"></i>
+                  </span>
+                
+                <% } else { %>
+                  <span onclick="location='/wishlistD/?owner_id=<%= finalRes[i][j].owner_id %>&name=<%=finalRes[i][j].table_name%>&entryTime=<%=finalRes[i][j].entryTime%>';return false"style="cursor: pointer;">
+                    <i class="bi bi-heart-fill" style="position: absolute; color: red;font-size: x-large;left: 90%;"></i>
+                 </span>
+                <% } %>
+
+                        <h5 class="card-title" style="color: black;" >₹<%= finalRes[i][j].price %></h5>
+                    </div>
+                   <figure style="height: 15rem; width: 100%;margin-top: -1rem;">
+                    <img src="images/<%=finalRes[i][j].image%>" class="card-img-top" alt="image" style="width: 100%;height: 100%;object-fit: contain;" >
+                  </figure>
+                    <h6 class="card-subtitle mb-2 text-muted" ><i class="bi bi-geo-alt-fill" style="font-size: x-large; color: #1c69d4;"></i><%= finalRes[i][j].location %></h6>
+                  </div>
+                </a>
+               </li>
+
+              <% } %>
+              <% } %>
+              <% } %>
+
+            </ul>
+
+
+            <script>
+              <% if (flash.success && flash.success.length > 0 ) {%>
+                  new Noty({
+                      theme: 'relax',
+                      text: "<%= flash.success %>",
+                      type: 'success',
+                      layout: 'topRight',
+                      timeout: 1500
+                      
+                  }).show();    
+              <%} %>
+              <% if (flash.warning && flash.warning.length > 0) {%>
+                  new Noty({
+                      theme: 'relax',
+                      text: "<%= flash.warning %>",
+                      type: 'warning',
+                      layout: 'topRight',
+                      timeout: 1500
+                      
+                  }).show();    
+              <%} %>
+              <% if (flash.error && flash.error.length > 0) {%>
+                  new Noty({
+                      theme: 'relax',
+                      text: "<%= flash.error %>",
+                      type: 'error',
+                      layout: 'topRight',
+                      timeout: 1500
+                      
+                  }).show();    
+              <%} %>
+          </script>
+
+
+
+            <script>
+              var currentUserId = parseInt(document.getElementsByTagName("abc")[0].innerHTML);
+
+              var socketIO = io("http://localhost:3000");
+              socketIO.emit("connected", currentUserId);
+        
+              socketIO.on("messageReceived", function (data) {
+                new Noty({
+                      theme: 'relax',
+                      text: data,
+                      type: 'info',
+                      layout: 'topRight',
+                      timeout: 4000
+                      
+                  }).show();    
+        });
+        
+          </script>
+        
+
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body>
+
+
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+      <div class="col-md-4 d-flex flex-column" > 
+        <span class="text-muted" style="margin-left: 5.5rem; font-size: x-large;">Follow Us</span>
+       
+   <a class="text-muted " href="https://www.youtube.com/channel/UCqdMvzwjdjK5zbN56XZgzAw" target="_blank" rel="noopener noreferrer" style="margin-left: 5.5rem;"><i class="bi bi-youtube" style="font-size: x-large;"></i></a>
+
+      </div>
+      
+     
+    </footer>
+
+
+</html>

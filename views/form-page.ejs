@@ -1,0 +1,135 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <% if(name == "car"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "name" placeholder="Enter Car name" required >
+                <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"min="1901" max="2155" required>
+                
+                <input type="radio" name="fuel"id = "petrol"   value="petrol" required>
+                <label for="petrol">Petrol</label><br>
+                <input type="radio" name="fuel"id = "diesel"  value="diesel" required>
+                <label for="diesel">Diesel</label><br>
+                <input type="radio" name="fuel"id = "gasoline"  value="gasoline" required>
+                <label for="gasoline">Gasoline</label><br>
+                <input type="radio" name="fuel"id = "ethanol"  value="ethanol" required>
+                <label for="ethanol">Ethanol</label><br>
+                <input type="radio" name="fuel" id = "cng" value ="cng" required>
+                <label for="cng"> CNG </label><br>
+                <input type="radio" name="fuel"id ="lpg" value="lpg" required>
+                <label for="lpg"> LPG </label><br>
+                <input type="radio" name="fuel"id = "bio-diesel"  value="bio-diesel" required>
+                <label for="bio-diesel"> Bio-Diesel </label><br>
+                <input type="radio" name="fuel" id = "electricity" value="electricity" required>
+                <label for="electricity"> Electricity </label><br>
+                
+                <input type="text" name = "transmission" placeholder="Enter transmission(text)">
+                <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
+                <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+        
+          <% if(name == "phone"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "name" placeholder="Enter name" required>
+                <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear" required min="1901" max="2155">
+                <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+
+          <% if(name == "pet"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "name" placeholder="Enter name" required>
+                <input type="number" step="0.01" name = "age" placeholder="Enter age" required min="0.1">
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+
+          <% if(name == "furniture"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "name" placeholder="Enter name" required>
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+
+          <% if(name == "electronicapp"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+              <input type="text" name = "name" placeholder="Enter name" required>
+              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear" required min="1901" max="2155">
+              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+              <input type="text" name = "description" placeholder="description" required>
+              <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+              <input type="file" name = "image" accept="" required>
+              <input type="text" name = "location" placeholder="location" required>
+              <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+
+
+          <% if(name == "home"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "adTitle" placeholder="Enter adTitle" required>
+                <input type="text" name = "furnishing" placeholder="Enter furnishing">
+                <input type="number" name = "bedRooms" placeholder="no of bedrooms" required>
+                <input type="number" step="0.0001" name = "superBuidupArea" placeholder="Enter superBuidupArea" required>
+                <input type="number" step="0.0001" name = "carpetArea" placeholder="Enter carpetArea" required>
+
+                <input type="number" name = "floors" placeholder="no of floors">
+                <input type="number" name = "carParking" placeholder="carParking">
+                <input type="text" name = "facing" placeholder="Enter facing">
+
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+
+
+          <% if(name == "bike"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+                <input type="text" name = "name" placeholder="Enter name" required>
+                <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear" required min="1901" max="2155">
+                <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
+                <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
+                <input type="text" name = "description" placeholder="description" required>
+                <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+                <input type="file" name = "image" accept="" required>
+                <input type="text" name = "location" placeholder="location" required>
+                <input type="submit" placeholder="submit">
+            </form>   
+          <% } %> 
+
+          <% if(name == "other"){%>
+            <form action = "/add-pdt/?name=<%=name%>" method="post" enctype="multipart/form-data">
+              <input type="text" name = "name" placeholder="Enter name" required>
+              <input type="text" name = "description" placeholder="description" required>
+              <input type="number" step="0.0001" name = "price" placeholder="Enter price" required>
+              <input type="file" name = "image" accept="" required>
+              <input type="text" name = "location" placeholder="location" required>
+              <input type="submit" placeholder="submit">
+            </form>   
+          <% } %>
+       
+    </body>
+</html>

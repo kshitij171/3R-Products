@@ -1,0 +1,25 @@
+{
+  "name": "contact_list",
+  "version": "1.0.0",
+  "description": "tryna make a contact list",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kshitij",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.0.2",
+    "express": "^4.17.3",
+    "express-fileupload": "^1.2.1",
+    "express-session": "^1.17.2",
+    "http": "^0.0.1-security",
+    "mongoose": "^6.1.7",
+    "mysql": "^2.18.1",
+    "passport": "^0.5.2",
+    "passport-local": "^1.0.0",
+    "socket.io": "^4.4.1"
+  }
+}
