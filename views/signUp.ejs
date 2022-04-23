@@ -11,13 +11,15 @@
         display: block;
         margin-top: 1rem;
         margin-bottom: 1rem;
+        border: none;
+        border-bottom: 2px solid #1c69d4 ;
 
     }
-    label{
+    /* label{
         display: block;
         margin-top: 1rem;
         margin-bottom: 1rem;
-    }
+    } */
 </style>
 
 
@@ -37,17 +39,17 @@
 
 
             <form action="/create" method="POST">
-                <label for="name">Name</label>
+                <!-- <label for="name">Name</label> -->
                 <input type="text" name="name" placeholder="Your Name" required>
-                <label for="email">Email-Id</label>
+                <!-- <label for="email">Email-Id</label> -->
                 <input type="email" name="email" placeholder="Your Email" required>
-                <label for="phone">Phone Number</label>
+                <!-- <label for="phone">Phone Number</label> -->
                 <input type="text" name="phone" placeholder="Your phone" required>
-                <label for="password">Password</label>
+                <!-- <label for="password">Password</label> -->
                 <input type="password" name="password" placeholder="Password" required>
-                <label for="confirm_password">Confirm Password</label>
+                <!-- <label for="confirm_password">Confirm Password</label> -->
                 <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-                <input type="submit" class="btn btn-secondary" value="Sign Up" style="color:white;background-color:#1c69d4 ">
+                <input type="submit" class="btn btn-secondary" value="Sign Up" style="color:white;background-color:#1c69d4;border-radius: 12px; ">
 
             </form>
            
