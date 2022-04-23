@@ -5,10 +5,10 @@
 </head>
 
 <body>
-  <xyz class="visually-hidden"> <%=owner_id%></xyz>
-  <abc class="visually-hidden"> <%=currentUserId%></abc>
-  <ent class="visually-hidden"> <%=data[0].entryTime%></ent>
-  <nm class="visually-hidden"> <%=name%></nm>
+  <xyz class="visually-hidden"><%=owner_id%></xyz>
+  <abc class="visually-hidden"><%=currentUserId%></abc>
+  <ent class="visually-hidden"><%=data[0].entryTime%></ent>
+  <nm class="visually-hidden"><%=name%></nm>
 
 
 
@@ -25,6 +25,40 @@
           font-family: 'Exo', sans-serif;
         }
         
+        textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px 20px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      resize: none;
+}
+      input[type=text], input[type=number] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      
+      input[type=submit], input[type=file]{
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      
+      input[type=submit]:hover {
+        background-color: #45a049;
+      }
+      
 
       .grid-item3 {
        grid-column-start: 1;
@@ -101,7 +135,7 @@
                 <% } %>
 
                 <h3 style="margin-top: 1.4rem;margin-bottom: 1.4rem;">₹<%= data[0].price%></h3> 
-                <h4><%= data[0].location%></h4>
+                <h4><i class="bi bi-geo-alt-fill" style="font-size: x-large; color: #1c69d4;"></i><%= data[0].location%></h4>
               </div>
           
           </div>
@@ -110,23 +144,20 @@
 
           <% if (deleteBtn == 0) { %>
             <div class="vstack gap-2 mx-auto">
-              <button type="button" class="btn btn-secondary" onclick="window.location.href='/delete-pdt/?name=<%=name%>&owner_id=<%=data[0].owner_id%>&entryTime=<%=data[0].entryTime%>';">
-                Delete This Product
-              </button>
-            
-              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#infoModal">
+              <button type="button" class="btn btn-outline-secondary" style="border: 2px solid black;border-radius: 12px;" data-bs-toggle="modal" data-bs-target="#infoModal">
                 Update Info.
               </button>
-              
-                
+              <button type="button" class="btn btn-secondary" style="background-color: #ed4343;border-radius: 12px;border: none;" onclick="window.location.href='/delete-pdt/?name=<%=name%>&owner_id=<%=data[0].owner_id%>&entryTime=<%=data[0].entryTime%>';">
+                Delete This Product
+              </button>
 
             </div>
   
               <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-dialog-scrollable">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="infoModalLabel" style="font-weight: bolder;" >Fill details which you would like to update</h5>
+                      <h5 class="modal-title" id="infoModalLabel" style="font-weight: bolder;" >Fill in the details which you would like to update</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -134,82 +165,85 @@
                       <form action = "/update-pdt/?name=<%=name%>&owner_id=<%=data[0].owner_id%>&entryTime=<%=data[0].entryTime%>" method="post" enctype="multipart/form-data">
                         <% if(name == "car"){%>
                           
-                              <input type="text" name = "name" placeholder="Enter Car name"   >
-                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"min="1901" max="2155" >
-                              
-                              <input type="radio" name="fuel"id = "petrol"   value="petrol" >
-                              <label for="petrol">Petrol</label><br>
-                              <input type="radio" name="fuel"id = "diesel"  value="diesel" >
-                              <label for="diesel">Diesel</label><br>
-                              <input type="radio" name="fuel"id = "gasoline"  value="gasoline" >
-                              <label for="gasoline">Gasoline</label><br>
-                              <input type="radio" name="fuel"id = "ethanol"  value="ethanol" >
-                              <label for="ethanol">Ethanol</label><br>
-                              <input type="radio" name="fuel" id = "cng" value ="cng" >
-                              <label for="cng"> CNG </label><br>
-                              <input type="radio" name="fuel"id ="lpg" value="lpg" >
-                              <label for="lpg"> LPG </label><br>
-                              <input type="radio" name="fuel"id = "bio-diesel"  value="bio-diesel" >
-                              <label for="bio-diesel"> Bio-Diesel </label><br>
-                              <input type="radio" name="fuel" id = "electricity" value="electricity" >
-                              <label for="electricity"> Electricity </label><br>
-                              
-                              <input type="text" name = "transmission" placeholder="Enter transmission(text)">
-                              <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
-                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Enter Car's name"  >
+                          <input type="number" name = "purchaseYear" placeholder="Enter Purchase Year"min="1901" max="2155" >
+                          
+                          <input type="radio" name="fuel"id = "petrol"   value="Petrol" >
+                          <label for="petrol">Petrol</label><br>
+                          <input type="radio" name="fuel"id = "diesel"  value="Diesel" >
+                          <label for="diesel">Diesel</label><br>
+                          <input type="radio" name="fuel"id = "gasoline"  value="Gasoline" >
+                          <label for="gasoline">Gasoline</label><br>
+                          <input type="radio" name="fuel"id = "ethanol"  value="Ethanol" >
+                          <label for="ethanol">Ethanol</label><br>
+                          <input type="radio" name="fuel" id = "cng" value ="Cng" >
+                          <label for="cng"> CNG </label><br>
+                          <input type="radio" name="fuel"id ="lpg" value="Lpg" >
+                          <label for="lpg"> LPG </label><br>
+                          <input type="radio" name="fuel"id = "bio-diesel"  value="Bio-diesel" >
+                          <label for="bio-diesel"> Bio-Diesel </label><br>
+                          <input type="radio" name="fuel" id = "electricity" value="Electricity" >
+                          <label for="electricity"> Electricity </label><br>
+                          
+                          <input type="text" name = "transmission" placeholder="Transmission">
+                          <input type="number" step="0.0001" name = "kmDriven" placeholder="Kms-Driven">
+                          <input type="number" name = "noOfOwners" placeholder="Number of Owners" min="1">
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                               
                              
                         <% } %>
                       
                         <% if(name == "phone"){%>
                           
-                              <input type="text" name = "name" placeholder="Enter name" >
-                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
-                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Phone Name (Brand)" >
+                          <input type="number" name = "purchaseYear" placeholder="Enter Purchase Year"  min="1901" max="2155">
+                          <input type="number" name = "noOfOwners" placeholder="Number of Owners" min="1">
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+          
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                               
                              
                         <% } %>
               
                         <% if(name == "pet"){%>
                           
-                              <input type="text" name = "name" placeholder="Enter name" >
-                              <input type="number" step="0.01" name = "age" placeholder="Enter age"  min="0.1">
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Enter Pet's name" >
+                          <input type="number" step="0.01" name = "age" placeholder="Enter age"  min="0.1">
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+          
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                               
                              
                         <% } %>
               
                         <% if(name == "furniture"){%>
                           
-                              <input type="text" name = "name" placeholder="Enter name" >
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
-                              
+                          <input type="text" name = "name" placeholder="Enter Product name" >
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+          
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                              
                         <% } %>
               
                         <% if(name == "electronicapp"){%>
                           
-                            <input type="text" name = "name" placeholder="Enter name" >
-                            <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
-                            <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
-                            <input type="text" name = "description" placeholder="description" >
-                            <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                            <input type="file" name = "image" accept="" >
-                            <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Name of the Appliance" >
+                          <input type="number" name = "purchaseYear" placeholder="Enter Purchase Year"  min="1901" max="2155">
+                          <input type="number" name = "noOfOwners" placeholder="Number of Owners" min="1">
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+            
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                             
                              
                         <% } %>
@@ -217,20 +251,21 @@
               
                         <% if(name == "home"){%>
                           
-                              <input type="text" name = "adTitle" placeholder="Enter adTitle" >
-                              <input type="text" name = "furnishing" placeholder="Enter furnishing">
-                              <input type="number" name = "bedRooms" placeholder="no of bedrooms" >
-                              <input type="number" step="0.0001" name = "superBuidupArea" placeholder="Enter superBuidupArea" >
-                              <input type="number" step="0.0001" name = "carpetArea" placeholder="Enter carpetArea" >
-              
-                              <input type="number" name = "floors" placeholder="no of floors">
-                              <input type="number" name = "carParking" placeholder="carParking">
-                              <input type="text" name = "facing" placeholder="Enter facing">
-              
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "adTitle" placeholder="Ad-Title" >
+                          <input type="text" name = "furnishing" placeholder="Enter furnishing">
+                          <input type="number" name = "bedRooms" placeholder="Number of bedrooms" >
+                          <input type="number" step="0.0001" name = "superBuidupArea" placeholder="Enter Super Builtup area (ft²)" >
+                          <input type="number" step="0.0001" name = "carpetArea" placeholder="Enter Carpet Area (ft²)" >
+          
+                          <input type="number" name = "floors" placeholder="Number of floors">
+                          <input type="number" name = "carParking" placeholder="Total Car Parking">
+                          <input type="text" name = "facing" placeholder="Enter Facing">
+          
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+          
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                               
                              
                         <% } %>
@@ -238,28 +273,31 @@
               
                         <% if(name == "bike"){%>
                           
-                              <input type="text" name = "name" placeholder="Enter name" >
-                              <input type="number" name = "purchaseYear" placeholder="Enter purchaseYear"  min="1901" max="2155">
-                              <input type="number" step="0.0001" name = "kmDriven" placeholder="km driven">
-                              <input type="number" name = "noOfOwners" placeholder="no of noOfOwners">
-                              <input type="text" name = "description" placeholder="description" >
-                              <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                              <input type="file" name = "image" accept="" >
-                              <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Enter Bike's name" >
+                          <input type="number" name = "purchaseYear" placeholder="Enter Purchase Year"  min="1901" max="2155">
+                          <input type="number" step="0.0001" name = "kmDriven" placeholder="Kms-Driven">
+                          <input type="number" name = "noOfOwners" placeholder="Number of Owners" min="1">
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+          
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                               
                              
                         <% } %> 
               
                         <% if(name == "other"){%>
                           
-                            <input type="text" name = "name" placeholder="Enter name" >
-                            <input type="text" name = "description" placeholder="description" >
-                            <input type="number" step="0.0001" name = "price" placeholder="Enter price" >
-                            <input type="file" name = "image" accept="" >
-                            <input type="text" name = "location" placeholder="location" >
+                          <input type="text" name = "name" placeholder="Enter Product's name" >
+                          <textarea type="text"name = "description" placeholder="Add a product Description (Tell something more about the product)" ></textarea>
+            
+                          <input type="number" step="0.0001" name = "price" placeholder="Set a price" >
+                          <input type="file" name = "image" accept="" >
+                          <input type="text" name = "location" placeholder="Your Location" >
                             
                              
                         <% } %>
+                        
 
                     </div>
                     <div class="modal-footer">
@@ -274,11 +312,11 @@
               <%} else { %>
                       <!-- Button trigger modal -->
             <div class="vstack gap-2 mx-auto">
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#infoModal">
+            <button type="button" class="btn btn-secondary" style="border: 2px solid black;border-radius: 12px;" data-bs-toggle="modal" data-bs-target="#infoModal">
                 Get Seller's Contact Info.
               </button>
             
-            <input onclick="return sendEvent(this);" type="button" value="Claim this product" class="btn btn-outline-secondary"/>
+            <input onclick="return sendEvent(this);" type="button" value="Claim this product" class="btn btn-outline-secondary" style="color:white;border-radius: 12px;border: none;background-color: #1c69d4;"/>
             </div> 
     
     <!-- Modal -->
@@ -286,15 +324,15 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="infoModalLabel">Modal title</h5>
+            <h4 class="modal-title" id="infoModalLabel" style="color: #1c69d4;">Contact Information</h4>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-person-fill"></i> Name: <%=userInfo[0].name%></span>
+              <h6 style="font-size: larger;"><i class="bi bi-person-fill"></i> Name: <%=userInfo[0].name%></h6>
               <br>
-              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-envelope-open-fill"></i> Email: <%=userInfo[0].email%></span>
+              <h6 style="font-size: larger;"><i class="bi bi-envelope-open-fill"></i> Email: <%=userInfo[0].email%></h6>
               <br>
-              <span style="font-size: larger;font-weight: bold;"><i class="bi bi-telephone-fill"></i> Phone: <%=userInfo[0].phone%></span>
+              <h6 style="font-size: larger;"><i class="bi bi-telephone-fill"></i> Phone: <%=userInfo[0].phone%></h6>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>   
@@ -314,7 +352,7 @@
 
         <% if(name != "other" && name != "furniture"){%> 
 
-          <h2 style="margin-top: 2rem; margin-bottom: 2rem;margin-left: 4rem;">Details</h2>
+          <h2 style="margin-top: 2rem; margin-bottom: 2rem;margin-left: 4rem;">Product Details</h2>
           <table bgcolor="white" align="center">  
             
           <tbody> 
