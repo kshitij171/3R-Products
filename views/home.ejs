@@ -1,6 +1,6 @@
 <html>
     <head>
-      
+
         <script>
           var globalF = 0;
           function Enabled(box){
@@ -45,7 +45,7 @@
         
       
       <a href="/category-page">
-            <button class="btn btn-outline-warning" style="margin-left:40.5vw;width: 21vw; font-weight: bold;">Sell a Product</button>
+            <button class="btn btn-outline-warning" style="margin-left:40.5vw;width: 21vw; font-weight: bold;border-radius: 12px;">Sell a Product</button>
       </a>
       <div class="hstack gap-4 ms-auto">
         <a data-bs-toggle="modal" data-bs-target="#wishItemModal" style="cursor: pointer;font-size: xx-large;" >
@@ -75,11 +75,11 @@
         </a>
         <% if(user_id != -1){%>
           <a href="/sign-out" style="margin-right:1.5rem;">
-              <button class="btn btn-outline-warning">Sign-out</button>
+              <button class="btn btn-outline-warning" style="border-radius: 12px;">Sign-out</button>
           </a>
       <% } else { %>
         <a href="/create" style="margin-right:1.5rem;">
-          <button class="btn btn-outline-warning">Sign-In</button>
+          <button class="btn btn-outline-warning" style="border-radius: 12px;">Sign-In</button>
       </a>
       <% } %>
       </div>
@@ -115,7 +115,7 @@
         
     </head>
     <body >
-        <abc class="visually-hidden"> <%=currentUserId%></abc>
+        <abc class="visually-hidden"><%=currentUserId%></abc>
      
          <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel" style="margin-top: 1rem;">
             <div class="carousel-inner">
@@ -353,10 +353,19 @@
               socketIO.emit("connected", currentUserId);
         
               socketIO.on("messageReceived", function (data) {
+                console.log(data);
                 new Noty({
                       theme: 'relax',
                       text: data,
                       type: 'info',
+                      layout: 'topRight',
+                      timeout: 4000
+                      
+                  }).show();    
+                  new Noty({
+                      theme: 'relax',
+                      text: 'Kindly Refresh to see new notifications',
+                      type: 'warning',
                       layout: 'topRight',
                       timeout: 4000
                       
