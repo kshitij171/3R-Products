@@ -134,9 +134,9 @@ socketIO.on("connection", function (socket) {
             
             if(data.table_name == "home") refer_name = `adTitle`;
             else refer_name = `name`;
-            // console.log(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = ${data.entryTime}`);
-            // console.log(sender[0]);
+           
             pool.query(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'` , function (err, result) {
+                // console.log(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'`);
                 pool.query(`INSERT requests(customer_id,owner_id,productName,entryTime,purchaseTime,status) 
                 SELECT ${data.currentUserId},${data.owner_id},'${result[0].name}','${data.entryTime}',${null},'pending' WHERE NOT EXISTS 
                     (   SELECT  1
@@ -152,6 +152,7 @@ socketIO.on("connection", function (socket) {
                         console.log(err);
                     }
                      // var message = `${sender[0].name} with E-mail ${sender[0].email} would like to claim your ${result[0].name}`;
+                    
                     var message = `${sender[0].name} : ${data.message}`;
                     socketIO.to(users[data.owner_id]).emit("messageReceived", message); 
                     // return res.redirect('/home-page');
@@ -424,12 +425,13 @@ app.post('/filter',function(req,res){
                     
                 wishlist[i].entryTime = giveDate(wishlist[i].entryTime);
                 
-                pool.query(`select ${r}.entryTime,${r}.owner_id, ${refer_name},${r}.price,${r}.image,${r}.location as table_name from ${wishlist[i].tableName} where owner_id = ${wishlist[i].owner_id} and entryTime = '${wishlist[i].entryTime}'`,function(err,result){
+                pool.query(`select ${r}.entryTime,${r}.owner_id, ${refer_name} as name,${r}.price,${r}.image,${r}.location as table_name from ${wishlist[i].tableName} where owner_id = ${wishlist[i].owner_id} and entryTime = '${wishlist[i].entryTime}'`,function(err,result){
                     if(err)console.log(err);
                     result[0].table_name = wishlist[i].tableName;
                     for(let k  = 0;k<result.length;k++){
                         result[k].entryTime = wishlist[i].entryTime;
                     }
+                   
                     wishlistItems.push(result);
                     if(i == wishlist.length-1){
                              pool.query(`select u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status
@@ -516,7 +518,7 @@ app.get('/home-page', function(req, res){
                     
             wishlist[i].entryTime = giveDate(wishlist[i].entryTime);
                 
-            pool.query(`select ${r}.entryTime,${r}.owner_id, ${refer_name},${r}.price,${r}.image,${r}.location as table_name from ${wishlist[i].tableName} where owner_id = ${wishlist[i].owner_id} and entryTime = '${wishlist[i].entryTime}'`,function(err,result){
+            pool.query(`select ${r}.entryTime,${r}.owner_id, ${refer_name} as name,${r}.price,${r}.image,${r}.location as table_name from ${wishlist[i].tableName} where owner_id = ${wishlist[i].owner_id} and entryTime = '${wishlist[i].entryTime}'`,function(err,result){
                 if(err)console.log(err);
                 result[0].table_name = wishlist[i].tableName;
                 
@@ -586,7 +588,7 @@ app.get('/wishlistA', function(req, res){
         //try to redirect
         return res.render('signIn');
     }
-    console.log(req.query.name);
+    
     pool.query(`INSERT  wishlist (customer_id,owner_id,tableName,entryTime) SELECT  ${currentUserId},${req.query.owner_id},'${req.query.name}', '${req.query.entryTime}' WHERE NOT EXISTS 
     (   SELECT  1
         FROM    wishlist 
@@ -815,7 +817,7 @@ app.post('/add-pdt',function(req,res){
         }
         if(req.body.kmDriven == '')req.body.kmDriven = null;
         if(req.body.noOfOwners == '')req.body.noOfOwners = null;
-        argmnt=`insert into car (name,purchaseYear,fuel,transmission,kmDriven,noOfOwners,description,price,image, location, owner_id, entrytime) values("${req.body.name}",${req.body.purchaseYear},"${req.body.fuel}","${trans}",${req.body.kmDriven}, ${req.body.noOfOwners},"${req.body.description}", ${req.body.price},"${file.name}","${req.body.location}", ${currentUserId}, '${dateTime}')`;
+        argmnt=`insert into car (name,purchaseYear,fuel,transmission,kmDriven,noOfOwners,description,price,image, location, owner_id, entrytime) values("${req.body.name}",${req.body.purchaseYear},"${req.body.fuel}",${trans},${req.body.kmDriven}, ${req.body.noOfOwners},"${req.body.description}", ${req.body.price},"${file.name}","${req.body.location}", ${currentUserId}, '${dateTime}')`;
     }
     if(req.query.name =="phone"){
         if(req.body.noOfOwners == '')req.body.noOfOwners = null;
