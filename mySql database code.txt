@@ -1,0 +1,325 @@
+CREATE DATABASE E_TRADING_DATABASE;
+USE E_TRADING_DATABASE;
+
+SET SQL_SAFE_UPDATES=0;
+
+Create table users (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL unique,
+  phone VARCHAR(255) NOT NULL,
+  pswd VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE car (
+  
+  name VARCHAR(255) NOT NULL,
+  purchaseYear YEAR NOT NULL,
+  fuel ENUM ('petrol','diesel','gasoline','ethanol','cng','lpg','bio-diesel','electricity') NOT NULL,
+  transmission VARCHAR(255) ,
+  kmDriven DECIMAL(65, 4),
+  noOfOwners INT CHECK (noOfOwners>0),
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+
+CREATE TABLE pet (
+  
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(2000) NOT NULL,
+  age INT NOT NULL CHECK (age>0),
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE phone (
+  
+  name VARCHAR(255) NOT NULL,
+  purchaseYear YEAR NOT NULL,
+  noOfOwners INT CHECK (noOfOwners>0),
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE other (
+  
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE home (
+  
+  adTitle VARCHAR(255) NOT NULL,
+  bedRooms INT NOT NULL,
+  furnishing VARCHAR(255) ,
+  superBuidupArea DECIMAL(65, 4) NOT NULL,
+  carpetArea DECIMAL(65, 4) NOT NULL,
+  floors INT ,
+  carParking INT,
+  facing VARCHAR(255) NOT NULL,
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE bike (
+  
+  name VARCHAR(255) NOT NULL,
+  purchaseYear YEAR NOT NULL,
+  kmDriven DECIMAL(65, 4),
+  noOfOwners INT CHECK (noOfOwners>0),
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE electronicapp(
+  
+  name VARCHAR(255) NOT NULL,
+  purchaseYear YEAR NOT NULL,
+  noOfOwners INT CHECK (noOfOwners>0),
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+CREATE TABLE furniture (
+  
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR(2000) NOT NULL,
+  price DECIMAL(65, 4) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  owner_id Int NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+
+CREATE TABLE wishlist (
+  customer_id int not null,
+  owner_id Int NOT NULL,
+  tableName VARCHAR(255) NOT NULL,
+  entryTime datetime NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id),
+  FOREIGN KEY (customer_id) REFERENCES users(id)
+);
+
+CREATE TABLE requests (
+  customer_id int not null,
+  owner_id Int NOT NULL,
+  productName VARCHAR(255) NOT NULL,
+  entryTime datetime NOT NULL,
+  purchaseTime datetime ,
+  status ENUM ('pending','approved') NOT NULL,
+  FOREIGN KEY (owner_id) REFERENCES users(id),
+  FOREIGN KEY (customer_id) REFERENCES users(id)
+);
+
+DELIMITER  $$
+CREATE TRIGGER car_W
+BEFORE DELETE ON car FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='car' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER phone_W
+BEFORE DELETE ON phone FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='phone' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER pet_W
+BEFORE DELETE ON pet FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='pet' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER other_W
+BEFORE DELETE ON other FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='other' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER furniture_W
+BEFORE DELETE ON furniture FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='furniture' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER bike_W
+BEFORE DELETE ON bike FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='bike' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+
+DELIMITER  $$
+CREATE TRIGGER electronicapp_W
+BEFORE DELETE ON electronicapp FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='electronicapp' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+DELIMITER  $$
+CREATE TRIGGER home_W
+BEFORE DELETE ON home FOR EACH ROW
+BEGIN
+delete from wishlist where owner_id = old.owner_id and tableName ='home' and entryTime = old.entryTime;
+END $$
+DELIMITER ;
+
+
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchayat","abc@abc", 123456,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchaya","abc@abcq", 1234567,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchay","abc@abcw", 1234562,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("pancha","abc@abcde", 1234563,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchayat12","abc@abce", 12345677,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchayat2","abc@abcf", 1234569,"345");
+INSERT INTO users (name, email, phone, pswd) VALUES ("panchayat4","abc@abcg", 1234560,"345");
+
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Crane, sandhill', 2009, 'petrol', 'Uinta ground squirrel', 2341, 1, 'Spermophilus armatus', 1, 'image.png', 'Stansbury Cliffrose', 1,'1998-01-23 12:45:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Quoll, eastern', 2010, 'petrol', 'Mynah, indian', 1396, 2, 'Acridotheres tristis', 2, 'image.png', 'Desert Tobacco', 1,'1998-01-23 12:50:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Striped skunk', 1993, 'petrol', 'Llama', 7217, 3, 'Lama', 3, 'image.png', 'Barbara''s Buttons', 1,'1998-01-23 12:55:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Lion, southern sea', 1993, 'petrol', 'Baboon, savanna', 4021, 4, 'Papio cynocephalus', 4, 'image.png', 'San Francisco Nailwort', 1,'1998-01-23 12:59:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Fox, blue', 2008, 'petrol', 'Savanna baboon', 1607, 5, 'Papio cynocephalus', 5, 'image.png', 'Swamp Paperbark', 2,'1998-01-24 11:30:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Slender loris', 2010, 'petrol', 'Lizard (unidentified)', 8173, 6, 'unavailable', 6, 'image.png', 'Sweginzow''s Rose', 3,'1998-02-21 10:40:56');
+insert into car (name, purchaseYear, fuel, transmission, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Turkey, australian brush', 1987, 'electricity', 'Fork-tailed drongo', 0596, 7, 'Dicrurus adsimilis', 7, 'image.png', 'Sixangle Foldwing', 4,'1998-01-23 12:35:56');
+
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Hornbill, red-billed', 1993, 1, 1, 'Tockus erythrorhyncus', 1, 'scrn.png', 'Western Featherbells', 5,'1998-01-11 12:45:50');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Greater roadrunner', 1992, 2, 2, 'Geococcyx californianus', 2, 'scrn.png', 'Olopu', 5,'1998-01-11 12:46:56');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Tortoise, desert', 1986, 3, 3, 'Gopherus agassizii', 3, 'scrn.png', 'Football Fruit', 5,'1998-05-11 12:47:56');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Capuchin, weeper', 1994, 4, 4, 'Cebus nigrivittatus', 4, 'scrn.png', 'Pyrenopsis Lichen', 6,'1998-01-12 12:48:56');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Badger, european', 1999, 5, 5, 'Meles meles', 5, 'scrn.png', 'Giant Dodder', 6,'1998-01-12 12:49:56');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Badger, american', 2010, 6, 6, 'Taxidea taxus', 6, 'scrn.png', 'Panicledleaf Ticktrefoil', 6,'1998-01-12 12:44:14');
+insert into bike (name, purchaseYear, kmDriven, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Alligator, american', 1988, 7, 7, 'Alligator mississippiensis', 7, 'scrn.png', 'Mouseear Hawkweed', 2,'1998-05-24 11:35:36');
+
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Rufous-collared sparrow', 'Zonotrichia capensis', 1, 1, 'adsf.png', 'Capote', 7,'1998-01-13 12:40:26');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Phalarope, grey', 'Phalaropus fulicarius', 2, 2, 'adsf.png', 'Rough Cocklebur', 7,'1998-01-13 12:41:36');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Anteater, australian spiny', 'Tachyglossus aculeatus', 3, 3, 'adsf.png', 'Whitestar', 7,'1998-02-13 11:42:46');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Insect, stick', 'Leprocaulinus vipera', 4, 4, 'adsf.png', 'Nakedstem Gymnosteris', 5,'1998-03-11 12:43:23');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Snake, green vine', 'Oxybelis fulgidus', 5, 5, 'adsf.png', 'Chinese Lady''s Tresses', 5,'1998-01-11 12:44:16');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Greater rhea', 'Rhea americana', 6, 6, 'adsf.png', 'Cartilage Lichen', 5,'1998-01-11 11:47:51');
+insert into pet (name, description, price, age, image, location, owner_id, entryTime) values ('Crow, american', 'Corvus brachyrhynchos', 7, 7, 'adsf.png', 'Senator Mine Alumroot', 1,'1999-01-15 10:23:36');
+
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Scarlet macaw', 2012, 1, 'Ara macao', 1, 'erfde.png', 'Dye Popcornflower', 3,'1998-02-22 11:41:56');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('European stork', 2010, 2, 'Ciconia ciconia', 2, 'erfde.png', 'Renner''s Map Lichen', 3,'1998-02-24 10:40:16');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Rhinoceros, square-lipped', 1997, 3, 'Ceratotherium simum', 3, 'erfde.png', 'Longleaf Jointfir', 3,'1998-02-25 11:15:36');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Verreaux''s sifaka', 1994, 4, 'Propithecus verreauxi', 4, 'erfde.png', 'Desert Thorn-apple', 3,'1998-02-26 10:55:46');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Red squirrel', 2012, 5, 'Tamiasciurus hudsonicus', 5, 'erfde.png', 'Homomallium Moss', 2,'1998-02-27 12:35:16');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Canada goose', 1996, 6, 'Branta canadensis', 6, 'erfde.png', 'Cracked Lichen', 3,'1998-02-28 10:25:56');
+insert into phone (name, purchaseYear, noOfOwners, description, price, image, location, owner_id, entryTime) values ('Egyptian vulture', 1998, 7, 'Neophron percnopterus', 7, 'erfde.png', 'Clasping Milkweed', 5,'1958-02-01 11:15:52');
+
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Barrows goldeneye', 'Bucephala clangula', 1, 'rytew.png', 'Pitted Onion', 7,'1998-03-13 11:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Baboon, gelada', 'Theropithecus gelada', 2, 'rytew.png', 'Staghorn Clubmoss', 7,'1998-03-14 10:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Zebra, plains', 'Equus burchelli', 3, 'rytew.png', 'Nimblewill', 7,'1998-03-15 11:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Hawk, ferruginous', 'Buteo regalis', 4, 'rytew.png', 'Cooper''s Dogweed', 3,'1998-03-16 12:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Seal, harbor', 'Phoca vitulina', 5, 'rytew.png', 'Roughfruit Berry', 3,'1998-03-17 10:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Great white pelican', 'Pelecans onocratalus', 6, 'rytew.png', 'Robust Lobelia', 3,'1998-03-18 11:45:56');
+insert into other (name, description, price, image, location, owner_id, entryTime) values ('Mocking cliffchat', 'Thamnolaea cinnmomeiventris', 7, 'rytew.png', 'Acrocordia Lichen', 4,'1998-03-19 10:45:56');
+
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('stannous fluoride', 1, 'Cyclobenzaprine Hydrochloride', 1, 1, 1, 1, 'citalopram hydrobromide', 'Axis axis', 1, 'efgj.png', 'Heartleaf Evening Primrose', 6,'1998-03-20 11:11:11');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('Diphenhydramine HCl', 2, 'Isopropyl Alcohol', 2, 2, 2, 2, 'Metformin Hydrochloride', 'Tragelaphus strepsiceros', 2, 'efgj.png', 'Arizona Hedgehog Cactus', 6,'1998-03-21 10:12:12');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('Iodinated I-125 Albumin', 3, 'GLYCERIN', 3, 3, 3, 3, 'Aluminum Acetate', 'Felis concolor', 3, 'efgj.png', 'Muelless', 6,'1998-03-22 12:13:13');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('Octinoxate', 4, 'amlodipine besylate', 4, 4, 4, 4, 'Fluocinonide', 'Tursiops truncatus', 4, 'efgj.png', 'Prickless Dewberry', 2,'1998-03-24 10:14:14');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('Ethyl Alcohol', 5, 'Orphenadrine Citrate', 5, 5, 5, 5, 'Lidocaine', 'Panthera leo', 5, 'efgj.png', 'Rimmed Lichen', 1,'1998-03-25 10:15:15');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('CHLOROXYLENOL', 6, 'trimethobenzamide hydrochloride', 6, 6, 6, 6, 'STANNUM METALLICUM', 'Crocodylus niloticus', 6, 'efgj.png', 'Mountain Azalea', 1,'1998-03-26 11:16:16');
+insert into home (adTitle, bedRooms, furnishing, superBuidupArea, carpetArea, floors, carParking, facing, description, price, image, location, owner_id, entryTime) values ('Triamcinolone Acetonide', 7, 'hydrochlorothiazide', 7, 7, 7, 7, 'ibuprofen', 'Tadorna tadorna', 7, 'efgj.png', 'Showy Dawnflower', 1,'1998-03-27 11:17:17');
+
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Acetaminophen and Diphenhydramine', 2009, 'Oreotragus oreotragus', 1, 'rwbkd.png', 'Labrador Lecidea Lichen', 2,'1998-04-22 11:11:23');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Quinapril', 1998, 'Caiman crocodilus', 2, 'rwbkd.png', 'Sand Fiddleleaf', 2,'1998-04-23 10:22:21');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Camphor, Menthol, Methyl Salicylate', 1999, 'Aquila chrysaetos', 3, 'rwbkd.png', 'Guatemalan Gamagrass', 2,'1998-04-20 11:33:22');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Diltiazem Hydrochloride', 2010, 'Lycosa godeffroyi', 4, 'rwbkd.png', 'Deformed Beard Lichen', 2,'1998-04-22 10:44:24');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Ergocalciferol', 2000, 'Nyctea scandiaca', 5, 'rwbkd.png', 'Trailing Windmills', 5,'1998-04-10 12:55:50');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Trazodone Hydrochloride', 1989, 'Cacatua tenuirostris', 6, 'rwbkd.png', 'Watson''s Amaranth', 5,'1998-04-30 12:11:50');
+insert into electronicApp (name, purchaseYear, description, price, image, location, owner_id, entryTime) values ('Sodium Sulfacetamide, Sulfur', 2010, 'Bucorvus leadbeateri', 7, 'rwbkd.png', 'Garcinia', 5,'1998-04-22 12:22:11');
+
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('venlafaxine hydrochloride', 'Milvago chimachima', 1, 'ndjre.png', 'Rattail Grass', 3,'1998-05-11 12:10:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('glycerin, petrolatum, phenylephrine HCl, pramoxine HCl', 'Ara ararauna', 2, 'ndjre.png', 'Ponderosa Violet', 3,'1998-05-12 12:09:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('fenofibrate', 'Tapirus terrestris', 3, 'ndjre.png', 'Brightblue Speedwell', 3,'1998-05-13 12:08:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('carya tomentosa pollen and carya laciniosa pollen and carya opollen', 'Posus', 4, 'ndjre.png', 'Smtle', 3,'1998-05-14 12:07:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('Salicylic Acid', 'Sagittarius serpentarius', 5, 'ndjre.png', 'Coviloppy', 3,'1998-05-15 12:06:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('Glycyrrhiza glabra, Kali muriaticum, Magnesia muriaticospiaticumm,', 'Pha', 6, 'ndjre.png', 'Tal', 3,'1998-05-16 12:05:10');
+insert into furniture (name, description, price, image, location, owner_id, entryTime) values ('Valacyclovir Hydrochloride', 'Nycticorax nycticorax', 7, 'ndjre.png', 'Arroyo Willow', 1,'1998-05-17 12:04:10');
+
+insert into wishList (customer_id,owner_id, tableName, entryTime) values (1,5, 'electronicapp', '1998-04-30 12:11:50');
+insert into wishList (customer_id,owner_id, tableName, entryTime) values (4,4, 'car', '1998-01-23 12:35:56');
+insert into wishList (customer_id,owner_id, tableName, entryTime) values (3,4, 'other', '1998-03-19 10:45:56');
+insert into wishList (customer_id,owner_id, tableName, entryTime) values (2,7, 'pet', '1998-02-13 11:42:46');
+insert into wishList (customer_id,owner_id, tableName, entryTime) values (3,3, 'phone', '1998-02-25 11:15:36');
+
+insert into requests() values(1,2,"asf",'1998-01-11 12:45:50','1993-01-11 12:45:50','pending');
+insert into requests() values(1,3,"werqe",'1998-01-11 12:45:50',null,'pending');
+
+CREATE VIEW USERS_VIEW AS SELECT name,email FROM users;
+CREATE VIEW REQUEST_VIEW AS SELECT customer_id,productName FROM requests;
+CREATE VIEW car_VIEW AS
+SELECT name,price
+FROM car;
+CREATE VIEW phone_VIEW AS
+SELECT name,price
+FROM phone;
+CREATE VIEW other_VIEW AS
+SELECT name,price
+FROM other;
+CREATE VIEW home_VIEW AS
+SELECT adTitle,price
+FROM home;
+CREATE VIEW bike_VIEW AS
+SELECT image,price
+FROM bike;
+CREATE VIEW electronicapp_VIEW AS
+SELECT name,price FROM electronicapp;
+CREATE VIEW furniture_VIEW AS SELECT name,price FROM furniture;
+CREATE VIEW wishlist_VIEW AS SELECT owner_id,customer_id FROM wishlist;   
+
+
+create index cartime on car(price,entryTime);
+create index biketime on bike(price,entryTime);
+create index pettime on pet(price,entryTime);
+create index phonetime on phone(price,entryTime);
+create index othertime on other(price,entryTime);
+create index hometime on home(price,entryTime);
+create index electronicapptime on electronicapp(price,entryTime);
+create index furnituretime on furniture(price,entryTime);
+create index wishlisttime on wishlist(entryTime);
+create index requesttime on requests(entryTime);
+
