@@ -4,18 +4,12 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const port = 8000;
 const { createPool } = require('mysql');
-const cookieParser = require('cookie-parser');
-const  session  = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-
-var currentUserId = -1;
 
 const pool = createPool({
     host: "localhost",
     user: "root",
     password: 'kkkk',
-    database: "record_company",
+    database: "E_TRADING_DATABASE",
     connectionLimit: 100,
     port: 3306
 });
@@ -64,7 +58,7 @@ passport.use(new LocalStrategy({
     passReqToCallback:true
 },
 function(req,email, password, done){
-    // find a user and establish the identity
+    
     pool.query(`select email,count(id) as numOfRows,id,pswd from users where email = "${email}" `, function(err, result) {
     if (err) {
         req.flash('error',err);
@@ -134,9 +128,8 @@ socketIO.on("connection", function (socket) {
             
             if(data.table_name == "home") refer_name = `adTitle`;
             else refer_name = `name`;
-           
             pool.query(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'` , function (err, result) {
-                // console.log(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'`);
+
                 pool.query(`INSERT requests(customer_id,owner_id,productName,entryTime,purchaseTime,status) 
                 SELECT ${data.currentUserId},${data.owner_id},'${result[0].name}','${data.entryTime}',${null},'pending' WHERE NOT EXISTS 
                     (   SELECT  1
@@ -173,13 +166,14 @@ app.post('/create',function(req,res){
     if(req.body.password != req.body.confirm_password){
         return res.redirect('back');
     }
-
+    
     pool.query(`select count(id) as numOfRows from users where email = "${req.body.email}" `, function(err, result) {
                 if (err) {
                     return console.log(err);
                 }
                 var num = result[0].numOfRows;
                 if(num == 0){
+                    
                     pool.query(`INSERT INTO users (name,email,phone,pswd) VALUES ("${req.body.name}","${req.body.email}","${req.body.phone}","${req.body.password}")`, function(err, result) {
                         if (err) {
                             return console.log(err);
@@ -213,7 +207,8 @@ app.post('/filter',function(req,res){
     // console.log(req.body);
     if(req.body.from != '' && req.body.to != '' && req.body.from != undefined && req.body.to != undefined){
         if(req.body.car != undefined){
-            pool.query(`select car.entryTime,car.owner_id,car.name,car.price,car.image,car.location from car where car.price >= ${req.body.from} and car.price <= ${req.body.to} order by car.price asc`,function(err,result){
+            // console.log(`select 'car' as table_name, car.entryTime,car.owner_id,car.name,car.price,car.image,car.location from car where car.price >= ${req.body.from} and car.price <= ${req.body.to} order by car.price asc`);
+            pool.query(`select 'car' as table_name, car.entryTime,car.owner_id,car.name,car.price,car.image,car.location from car where car.price >= ${req.body.from} and car.price <= ${req.body.to} order by car.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
             
@@ -223,7 +218,7 @@ app.post('/filter',function(req,res){
             });
         }
         if(req.body.pet != undefined){
-            pool.query(`select pet.entryTime,pet.owner_id,pet.name,pet.price,pet.image,pet.location from pet where pet.price >= ${req.body.from} and pet.price <= ${req.body.to} order by pet.price asc`,function(err,result){
+            pool.query(`select 'pet' as table_name, pet.entryTime,pet.owner_id,pet.name,pet.price,pet.image,pet.location from pet where pet.price >= ${req.body.from} and pet.price <= ${req.body.to} order by pet.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -235,7 +230,7 @@ app.post('/filter',function(req,res){
 
         }
         if(req.body.phone != undefined){
-            pool.query(`select phone.entryTime,phone.owner_id,phone.name,phone.price,phone.image,phone.location from phone where phone.price >= ${req.body.from} and phone.price <= ${req.body.to} order by phone.price asc`,function(err,result){
+            pool.query(`select 'phone' as table_name, phone.entryTime,phone.owner_id,phone.name,phone.price,phone.image,phone.location from phone where phone.price >= ${req.body.from} and phone.price <= ${req.body.to} order by phone.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -246,7 +241,7 @@ app.post('/filter',function(req,res){
            
         }
         if(req.body.other != undefined){
-            pool.query(`select other.entryTime,other.owner_id,other.name,other.price,other.image,other.location from other where other.price >= ${req.body.from} and other.price <= ${req.body.to} order by other.price asc`,function(err,result){
+            pool.query(`select 'other' as table_name, other.entryTime,other.owner_id,other.name,other.price,other.image,other.location from other where other.price >= ${req.body.from} and other.price <= ${req.body.to} order by other.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -257,7 +252,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.furniture != undefined){
-            pool.query(`select furniture.entryTime,furniture.owner_id,furniture.name,furniture.price,furniture.image,furniture.location from furniture where furniture.price >= ${req.body.from} and furniture.price <= ${req.body.to} order by furniture.price asc`,function(err,result){
+            pool.query(`select 'furniture' as table_name, furniture.entryTime,furniture.owner_id,furniture.name,furniture.price,furniture.image,furniture.location from furniture where furniture.price >= ${req.body.from} and furniture.price <= ${req.body.to} order by furniture.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -268,7 +263,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.bike != undefined){
-            pool.query(`select bike.entryTime,bike.owner_id,bike.name,bike.price,bike.image,bike.location from bike where bike.price >= ${req.body.from} and bike.price <= ${req.body.to} order by bike.price asc`,function(err,result){
+            pool.query(`select 'bike' as table_name, bike.entryTime,bike.owner_id,bike.name,bike.price,bike.image,bike.location from bike where bike.price >= ${req.body.from} and bike.price <= ${req.body.to} order by bike.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -279,7 +274,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.home != undefined){
-            pool.query(`select home.entryTime,home.owner_id,home.adTitle as name,home.price,home.image,home.location from home where home.price >= ${req.body.from} and home.price <= ${req.body.to} order by home.price asc`,function(err,result){
+            pool.query(`select 'home' as table_name, home.entryTime,home.owner_id,home.adTitle as name,home.price,home.image,home.location from home where home.price >= ${req.body.from} and home.price <= ${req.body.to} order by home.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -290,7 +285,7 @@ app.post('/filter',function(req,res){
            
         }
         if(req.body.electronicapp != undefined){
-            pool.query(`select electronicapp.entryTime,electronicapp.owner_id,electronicapp.name,electronicapp.price,electronicapp.image,electronicapp.location from electronicapp where electronicapp.price >= ${req.body.from} and electronicapp.price <= ${req.body.to} order by electronicapp.price asc`,function(err,result){
+            pool.query(`select 'electronicapp' as table_name, electronicapp.entryTime,electronicapp.owner_id,electronicapp.name,electronicapp.price,electronicapp.image,electronicapp.location from electronicapp where electronicapp.price >= ${req.body.from} and electronicapp.price <= ${req.body.to} order by electronicapp.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -303,7 +298,7 @@ app.post('/filter',function(req,res){
         
     }else{
         if(req.body.car != undefined){
-            pool.query(`select car.entryTime,car.owner_id,car.name,car.price,car.image,car.location from car order by car.price asc `,function(err,result){
+            pool.query(`select 'car' as table_name, car.entryTime,car.owner_id,car.name,car.price,car.image,car.location from car order by car.price asc `,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -314,7 +309,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.pet != undefined){
-            pool.query(`select pet.entryTime,pet.owner_id,pet.name,pet.price,pet.image,pet.location from pet order by pet.price asc`,function(err,result){
+            pool.query(`select 'pet' as table_name, pet.entryTime,pet.owner_id,pet.name,pet.price,pet.image,pet.location from pet order by pet.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -325,7 +320,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.phone != undefined){
-            pool.query(`select phone.entryTime,phone.owner_id,phone.name,phone.price,phone.image,phone.location from phone order by phone.price asc`,function(err,result){
+            pool.query(`select 'phone' as table_name, phone.entryTime,phone.owner_id,phone.name,phone.price,phone.image,phone.location from phone order by phone.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -336,7 +331,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.other != undefined){
-            pool.query(`select other.entryTime,other.owner_id,other.name,other.price,other.image,other.location from other order by other.price asc`,function(err,result){
+            pool.query(`select 'other' as table_name, other.entryTime,other.owner_id,other.name,other.price,other.image,other.location from other order by other.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -347,7 +342,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.furniture != undefined){
-            pool.query(`select furniture.entryTime,furniture.owner_id,furniture.name,furniture.price,furniture.image,furniture.location from furniture order by furniture.price asc`,function(err,result){
+            pool.query(`select 'furniture' as table_name, furniture.entryTime,furniture.owner_id,furniture.name,furniture.price,furniture.image,furniture.location from furniture order by furniture.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -358,7 +353,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.bike != undefined){
-            pool.query(`select bike.entryTime,bike.owner_id,bike.name,bike.price,bike.image,bike.location from bike order by bike.price asc`,function(err,result){
+            pool.query(`select 'bike' as table_name, bike.entryTime,bike.owner_id,bike.name,bike.price,bike.image,bike.location from bike order by bike.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -369,7 +364,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.home != undefined){
-            pool.query(`select home.entryTime,home.owner_id,home.adTitle as name,home.price,home.image,home.location from home order by home.price asc`,function(err,result){
+            pool.query(`select 'home' as table_name, home.entryTime,home.owner_id,home.adTitle as name,home.price,home.image,home.location from home order by home.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -380,7 +375,7 @@ app.post('/filter',function(req,res){
             
         }
         if(req.body.electronicapp != undefined){
-            pool.query(`select electronicapp.entryTime,electronicapp.owner_id,electronicapp.name,electronicapp.price,electronicapp.image,electronicapp.location from electronicapp order by electronicapp.price asc`,function(err,result){
+            pool.query(`select 'electronicapp' as table_name, electronicapp.entryTime,electronicapp.owner_id,electronicapp.name,electronicapp.price,electronicapp.image,electronicapp.location from electronicapp order by electronicapp.price asc`,function(err,result){
                 if(err)console.log(err);
                 for(let k  = 0;k<result.length;k++){
                     
@@ -395,8 +390,8 @@ app.post('/filter',function(req,res){
         if(wishlist.length == 0){
     
                 
-                 pool.query(`select u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status
-                 from users as u LEFT JOIN requests as r on r.customer_id = u.id where r.owner_id  = ${currentUserId}`, function(err, request) {
+                 pool.query(`select (select name from users where id = r.owner_id) as o_name ,u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status,r.owner_id,r.customer_id
+                 from users as u INNER JOIN requests as r on r.customer_id = u.id`, function(err, request) {
                      if(err)console.log(err);
                      
                      for(let k  = 0;k<request.length;k++){
@@ -434,8 +429,8 @@ app.post('/filter',function(req,res){
                    
                     wishlistItems.push(result);
                     if(i == wishlist.length-1){
-                             pool.query(`select u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status
-                             from users as u LEFT JOIN requests as r on r.customer_id = u.id where r.owner_id  = ${currentUserId}`, function(err, request) {
+                             pool.query(`select (select name from users where id = r.owner_id) as o_name ,u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status,r.owner_id,r.customer_id
+                             from users as u INNER JOIN requests as r on r.customer_id = u.id`, function(err, request) {
                                  if(err)console.log(err);
                                  
                                  for(let k  = 0;k<request.length;k++){
@@ -450,12 +445,7 @@ app.post('/filter',function(req,res){
                                  else return res.render('home',{finalRes:finalResWP,user_id:user_id,wishlistItems:wishlistItems,currentUserId:currentUserId,request:request});
                         
                              }); 
-                         }
-            // if(currentUserId == -1){
-            //     if(finalResP.length!=0)return res.render('home',{finalRes:finalResP,user_id:user_id,wishlistItems:wishlistItems,currentUserId:currentUserId});
-            //     else return res.render('home',{finalRes:finalResWP,user_id:user_id,wishlistItems:wishlistItems,currentUserId:currentUserId});        
-            // }
-                
+                    }
         });
     }
 
@@ -492,10 +482,10 @@ app.get('/home-page', function(req, res){
 
     pool.query(`select * from wishlist where customer_id = ${currentUserId}`,  function(err, wishlist) {
        if(wishlist.length == 0){
-        pool.query(`select u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status
-        from users as u LEFT JOIN requests as r on r.customer_id = u.id where r.owner_id  = ${currentUserId}`, function(err, request) {
+        pool.query(`select (select name from users where id = r.owner_id) as o_name ,u.name as c_name,u.email as c_email,r.productName,r.entryTime,r.purchaseTime,r.status,r.owner_id,r.customer_id
+        from users as u INNER JOIN requests as r on r.customer_id = u.id`, function(err, request) {
             if(err)console.log(err);
-            
+            // console.log(request);
             for(let k  = 0;k<request.length;k++){
                 request[k].entryTime = giveDate(request[k].entryTime);
                 if(request[k].purchaseTime != null){
@@ -517,7 +507,6 @@ app.get('/home-page', function(req, res){
             var d = new Date(wishlist[i].entryTime);
                     
             wishlist[i].entryTime = giveDate(wishlist[i].entryTime);
-                
             pool.query(`select ${r}.entryTime,${r}.owner_id, ${refer_name} as name,${r}.price,${r}.image,${r}.location as table_name from ${wishlist[i].tableName} where owner_id = ${wishlist[i].owner_id} and entryTime = '${wishlist[i].entryTime}'`,function(err,result){
                 if(err)console.log(err);
                 result[0].table_name = wishlist[i].tableName;
@@ -556,7 +545,7 @@ app.get('/approve', function(req, res){
     let cDate = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
     let cTime = current.getHours() + ":" + current.getMinutes() + ":" + current.getSeconds();
     let dateTime = cDate + ' ' + cTime;
-    
+
     pool.query(`UPDATE requests 
     SET purchaseTime = CASE WHEN status = 'pending'
                            THEN '${dateTime}'
@@ -637,7 +626,6 @@ app.get('/profile',function(req,res){
         return res.render('signIn');
     }
     var deleteBtn = -1;
-    // console.log(`Select * from ${req.query.name} where owner_id = ${req.query.owner_id} and entryTime = '${req.query.entryTime}'`);
     pool.query(`Select * from ${req.query.name} where owner_id = ${req.query.owner_id} and entryTime = '${req.query.entryTime}'`, function(err, result1) {
         if (err) {
             console.log(err);
@@ -767,7 +755,6 @@ app.post('/update-pdt',function(req,res){
 });
 
 app.get('/delete-pdt',function(req,res){
-   
     pool.query(`delete from ${req.query.name} where owner_id = ${req.query.owner_id} and entryTime = '${req.query.entryTime}'`, function(err, result) {
         if (err) {
             return console.log(err);
@@ -817,7 +804,7 @@ app.post('/add-pdt',function(req,res){
         }
         if(req.body.kmDriven == '')req.body.kmDriven = null;
         if(req.body.noOfOwners == '')req.body.noOfOwners = null;
-        argmnt=`insert into car (name,purchaseYear,fuel,transmission,kmDriven,noOfOwners,description,price,image, location, owner_id, entrytime) values("${req.body.name}",${req.body.purchaseYear},"${req.body.fuel}",${trans},${req.body.kmDriven}, ${req.body.noOfOwners},"${req.body.description}", ${req.body.price},"${file.name}","${req.body.location}", ${currentUserId}, '${dateTime}')`;
+        argmnt=`insert into car (name,purchaseYear,fuel,transmission,kmDriven,noOfOwners,description,price,image, location, owner_id, entrytime) values("${req.body.name}",${req.body.purchaseYear},"${req.body.fuel}","${trans}",${req.body.kmDriven}, ${req.body.noOfOwners},"${req.body.description}", ${req.body.price},"${file.name}","${req.body.location}", ${currentUserId}, '${dateTime}')`;
     }
     if(req.query.name =="phone"){
         if(req.body.noOfOwners == '')req.body.noOfOwners = null;
@@ -854,11 +841,41 @@ app.post('/add-pdt',function(req,res){
     if(req.query.name =="pet"){
         argmnt=`insert into pet (name,age,description,price,image, location, owner_id, entrytime) values("${req.body.name}",${req.body.age},"${req.body.description}", ${req.body.price},"${file.name}","${req.body.location}", ${currentUserId}, '${dateTime}')`;
     }
-
+    
     pool.query(argmnt, function(err, result) {
         if (err) {
             return console.log(err);
         }
+        pool.query(`select * from users where id = ${currentUserId}`, function(err, resultx) {
+            if (err) {
+                return console.log(err);
+            }
+            var viewName = resultx[0].id+"_";
+            var argm0 = `DROP USER IF EXISTS '${viewName}'@'localhost';`
+            var argm1 = `CREATE USER '${viewName}'@'localhost' IDENTIFIED BY '${resultx[0].pswd}';`;
+            var argm2 = `CREATE OR REPLACE SQL SECURITY DEFINER VIEW ${viewName} AS SELECT * FROM ${req.query.name} WHERE (owner_id = ${currentUserId});`;
+            var argm3 = `GRANT SELECT,UPDATE,DELETE ON ${viewName} TO ${viewName}@localhost;`;
+            pool.query(argm0, function(err, result) {
+                pool.query(argm1, function(err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    pool.query(argm2, function(err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        pool.query(argm3, function(err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                        });
+                });
+                });
+            });
+            
+        });
+    
+
         req.flash('success','Product Uploaded Successfully');
         return res.redirect('/home-page');
     });
