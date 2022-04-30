@@ -4,6 +4,12 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const port = 8000;
 const { createPool } = require('mysql');
+const cookieParser = require('cookie-parser');
+const  session  = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+var currentUserId = -1;
 
 const pool = createPool({
     host: "localhost",
