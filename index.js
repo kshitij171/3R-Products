@@ -6,19 +6,19 @@ const port = 8000;
 // const { createPool } = require('mysql');
 const cookieParser = require('cookie-parser');
 const  session  = require('express-session');
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 
 var currentUserId = -1;
 
-// const pool = createPool({
-//     host: "localhost",
-//     user: "root",
-//     password: 'kkkk',
-//     database: "E_TRADING_DATABASE",
-//     connectionLimit: 100,
-//     port: 3306
-// });
+const pool = createPool({
+    host: "localhost",
+    user: "root",
+    password: 'kkkk',
+    database: "E_TRADING_DATABASE",
+    connectionLimit: 100,
+    port: 3306
+});
 
 const app = express();
 const flash = require('connect-flash');
@@ -44,11 +44,11 @@ app.use(session({
     }
 }));
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
-// app.use(flash());
-// app.use(customMware.setFlash);
+app.use(flash());
+app.use(customMware.setFlash);
 
 app.get('/',function(req,res){
     if(req.isAuthenticated()){
@@ -58,109 +58,109 @@ app.get('/',function(req,res){
 });
 
 
-// // authentication using passport
-// // passport.use(new LocalStrategy({
-// //     usernameField: 'email',
-// //     passReqToCallback:true
-// // },
-// function(req,email, password, done){
+// authentication using passport
+// passport.use(new LocalStrategy({
+//     usernameField: 'email',
+//     passReqToCallback:true
+// },
+function(req,email, password, done){
     
-//     pool.query(`select email,count(id) as numOfRows,id,pswd from users where email = "${email}" `, function(err, result) {
-//     if (err) {
-//         req.flash('error',err);
-//        return done(err);
-//     }
-//     var num = result[0].numOfRows;
-//     if(num == 0){
-//         req.flash('error','Invalid Username/Password');
-//         return done(null, false);
-//     }
+    pool.query(`select email,count(id) as numOfRows,id,pswd from users where email = "${email}" `, function(err, result) {
+    if (err) {
+        req.flash('error',err);
+       return done(err);
+    }
+    var num = result[0].numOfRows;
+    if(num == 0){
+        req.flash('error','Invalid Username/Password');
+        return done(null, false);
+    }
 
-//     if(password == result[0].pswd){
-//        return done(null, result);
+    if(password == result[0].pswd){
+       return done(null, result);
         
-//     }else{
-//         req.flash('error','Invalid Username/Password');
-//         return done(null, false);
-//     }
-// });
-// }
-// ));
+    }else{
+        req.flash('error','Invalid Username/Password');
+        return done(null, false);
+    }
+});
+}
+));
 
-// // serializing the user to decide which key is to be kept in the cookies
-// passport.serializeUser(function(user, done){
-//     currentUserId = user[0].id;
-//     done(null, user[0].id);
-// });
+// serializing the user to decide which key is to be kept in the cookies
+passport.serializeUser(function(user, done){
+    currentUserId = user[0].id;
+    done(null, user[0].id);
+});
 
-// // deserializing the user from the key in the cookies
-// passport.deserializeUser(function(id, done){
-//     pool.query(` select * from users where id = ${id}`, function(err, result) {
-//         if (err || result[0].id == null) {
-//             // console.log('Error in finding user --> Passport');
-//             return done(err);
-//         }
-//          return done(null, result);
-//     });
-// });
+// deserializing the user from the key in the cookies
+passport.deserializeUser(function(id, done){
+    pool.query(` select * from users where id = ${id}`, function(err, result) {
+        if (err || result[0].id == null) {
+            // console.log('Error in finding user --> Passport');
+            return done(err);
+        }
+         return done(null, result);
+    });
+});
 
-// var http = require("http").createServer(app);
-// var socketIO = require("socket.io")(http, {
-//     cors: {
-//         origin: "*"
-//     }
-// });
+var http = require("http").createServer(app);
+var socketIO = require("socket.io")(http, {
+    cors: {
+        origin: "*"
+    }
+});
  
-// function giveDate(a) {
-//     var d = new Date(a);
-//     let cDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-//     let cTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
-//     let dateTime = cDate + ' ' + cTime;
-//     return dateTime;
-//   }
+function giveDate(a) {
+    var d = new Date(a);
+    let cDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    let cTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    let dateTime = cDate + ' ' + cTime;
+    return dateTime;
+  }
 
-// var users = [];
+var users = [];
  
-// socketIO.on("connection", function (socket) {
+socketIO.on("connection", function (socket) {
  
-//     socket.on("connected", function (userId) {
-//         users[userId] = socket.id;
-//     });
+    socket.on("connected", function (userId) {
+        users[userId] = socket.id;
+    });
  
-//     socket.on("sendEvent", async function (data) {
+    socket.on("sendEvent", async function (data) {
         
-//         pool.query("SELECT * FROM users WHERE id = " + data.currentUserId, function (error, sender) {
-//             var refer_name;
+        pool.query("SELECT * FROM users WHERE id = " + data.currentUserId, function (error, sender) {
+            var refer_name;
             
-//             if(data.table_name == "home") refer_name = `adTitle`;
-//             else refer_name = `name`;
-//             pool.query(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'` , function (err, result) {
+            if(data.table_name == "home") refer_name = `adTitle`;
+            else refer_name = `name`;
+            pool.query(`select ${refer_name} as name from ${data.table_name} where owner_id = ${data.owner_id} and entryTime = '${data.entryTime}'` , function (err, result) {
 
-//                 pool.query(`INSERT requests(customer_id,owner_id,productName,entryTime,purchaseTime,status) 
-//                 SELECT ${data.currentUserId},${data.owner_id},'${result[0].name}','${data.entryTime}',${null},'pending' WHERE NOT EXISTS 
-//                     (   SELECT  1
-//                         FROM    requests
-//                         WHERE   customer_id = ${data.currentUserId}
-//                         AND     owner_id = ${data.owner_id} 
-//                         AND     productName = '${result[0].name}'
-//                         AND 	entryTime = '${data.entryTime}'
-//                         AND		purchaseTime is ${null}
-//                         AND		status = 'pending'
-//                     )` , function (error, resultF) {
-//                     if(err){
-//                         console.log(err);
-//                     }
-//                      // var message = `${sender[0].name} with E-mail ${sender[0].email} would like to claim your ${result[0].name}`;
+                pool.query(`INSERT requests(customer_id,owner_id,productName,entryTime,purchaseTime,status) 
+                SELECT ${data.currentUserId},${data.owner_id},'${result[0].name}','${data.entryTime}',${null},'pending' WHERE NOT EXISTS 
+                    (   SELECT  1
+                        FROM    requests
+                        WHERE   customer_id = ${data.currentUserId}
+                        AND     owner_id = ${data.owner_id} 
+                        AND     productName = '${result[0].name}'
+                        AND 	entryTime = '${data.entryTime}'
+                        AND		purchaseTime is ${null}
+                        AND		status = 'pending'
+                    )` , function (error, resultF) {
+                    if(err){
+                        console.log(err);
+                    }
+                     // var message = `${sender[0].name} with E-mail ${sender[0].email} would like to claim your ${result[0].name}`;
                     
-//                     var message = `${sender[0].name} : ${data.message}`;
-//                     socketIO.to(users[data.owner_id]).emit("messageReceived", message); 
-//                     // return res.redirect('/home-page');
-//                 });    
+                    var message = `${sender[0].name} : ${data.message}`;
+                    socketIO.to(users[data.owner_id]).emit("messageReceived", message); 
+                    // return res.redirect('/home-page');
+                });    
                
-//             });      
-//         });
-//     });
-// });
+            });      
+        });
+    });
+});
  
 http.listen(process.env.PORT || 3000, function () {
     console.log("Server is started.");
